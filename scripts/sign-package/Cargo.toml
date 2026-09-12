@@ -1,0 +1,12 @@
+[package]
+name = "mitos-sign-package"
+description = "Signs an already-built .mpkg archive's payload hash with a maintainer/release key"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+mitos-pkg.workspace = true
+mitos-packages-toolkit.workspace = true
+clap.workspace = true
