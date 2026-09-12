@@ -1,0 +1,13 @@
+name = "tests-fixture-pkg-explicit"
+version = "2.0.0"
+description = "Fixture package with its own build.steps, for testing that explicit steps win over inherits."
+category = "core"
+channel = "testing"
+inherits = "cargo"
+
+[source]
+git = "https://example.invalid/tests-fixture-pkg-explicit"
+rev = "main"
+
+[build]
+steps = ["echo this-is-the-explicit-step"]

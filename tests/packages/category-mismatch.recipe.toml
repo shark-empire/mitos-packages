@@ -1,0 +1,9 @@
+name = "tests-fixture-pkg"
+version = "1.0.0"
+description = "Same as minimal-valid.recipe.toml but with the wrong category on purpose."
+category = "desktop"
+channel = "testing"
+
+[source]
+git = "https://example.invalid/tests-fixture-pkg"
+rev = "main"
