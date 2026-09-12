@@ -1,0 +1,10 @@
+name = "tests-fixture-pkg"
+version = "1.0.0"
+description = "Fixture package used by toolkit's own tests — not a real MITOS component."
+category = "core"
+channel = "testing"
+inherits = "cargo"
+
+[source]
+git = "https://example.invalid/tests-fixture-pkg"
+rev = "main"
