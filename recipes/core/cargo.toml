@@ -1,0 +1,9 @@
+system = "cargo"
+steps = [
+    # `cargo install --root` figures out what a crate produces and
+    # installs any binaries it builds under <root>/bin/ itself — this
+    # one line works for single-binary crates and multi-binary crates
+    # (e.g. mitos-pkg, which also builds mitos-pkgd) alike, with no
+    # per-package binary name to keep in sync here.
+    "cargo install --path . --root \"$MITOS_PAYLOAD_DIR/usr\" --locked",
+]
