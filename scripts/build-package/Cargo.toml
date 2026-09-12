@@ -1,0 +1,13 @@
+[package]
+name = "mitos-build-package"
+description = "Fetches a recipe's source, runs its build steps, and packages the result into a .mpkg"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+mitos-pkg.workspace = true
+mitos-packages-toolkit.workspace = true
+clap.workspace = true
+serde_json.workspace = true
