@@ -1,0 +1,15 @@
+# Placeholder pending a MITOS-specific target spec — see toolchains/README.md.
+# Every field here is the *current* (Linux-hosted) stand-in, not a final answer.
+
+arch = "riscv64"
+status = "aspirational — no known working boot path yet"
+
+# What `rustup target add` needs, and what $MITOS_TARGET expands to in a
+# recipe's build.steps for a cross-compiling step (e.g.
+# "cargo install --target $MITOS_TARGET --path . --root ...").
+rust_target = "riscv64gc-unknown-linux-gnu"
+
+# Linker package/binary a cross build step should assume is on PATH.
+# Empty for x86_64 (native == host on CI runners today); cross triples
+# need a real cross-linker here once CI actually cross-builds them.
+linker = ""
