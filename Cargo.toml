@@ -1,0 +1,47 @@
+[workspace]
+resolver = "2"
+members = [
+    "toolkit",
+    "scripts/build-package",
+    "scripts/generate-metadata",
+    "scripts/generate-index",
+    "scripts/sign-package",
+    "scripts/verify-package",
+    "scripts/publish-repository",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Shark <babor3331@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/shark-empire/mitos-packages"
+
+[workspace.dependencies]
+# The package/repository/security formats and logic already live in
+# mitos-pkg — this workspace's job is producing and publishing content in
+# that format, not redefining it. Every tool here reuses mitos-pkg's
+# Manifest, PackageMetadata, RepositoryIndex, checksum, and signature
+# code directly (via the `toolkit` crate) instead of a second copy that
+# could drift out of sync with what mitos-pkg actually accepts.
+mitos-pkg = { git = "https://github.com/shark-empire/mitos-pkg" }
+mitos-packages-toolkit = { path = "toolkit" }
+
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+semver = { version = "1", features = ["serde"] }
+thiserror = "2"
+hex = "0.4"
+walkdir = "2"
+
+[profile.release]
+# Same tradeoff mitos-pkg's own profile makes: these are short-lived CI
+# tools that spend their time on I/O (git, disk, network), not tight
+# loops, so trading a little codegen time for a smaller resident binary
+# costs nothing that matters here.
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
