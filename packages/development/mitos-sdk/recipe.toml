@@ -1,0 +1,21 @@
+name = "mitos-sdk"
+version = "0.1.0"
+description = "MITOS's software development kit — headers, build templates, and reference docs for building MITOS applications."
+category = "development"
+channel = "testing"
+inherits = "cargo-lib"
+
+[source]
+git = "https://github.com/shark-empire/mitos-sdk"
+rev = "main"
+
+# build.steps is intentionally left empty: this recipe inherits its
+# steps from recipes/development/cargo-lib.toml (see that file, and
+# recipes/README.md for how inheritance resolves). Give this recipe its
+# own [build] steps here instead if this package needs something the
+# shared template doesn't cover (e.g. a codegen step before `cargo build`).
+
+
+# Uncomment once this package has a maintainer signing key on file (see
+# keys/README.md) and CI is set up to sign it during publish:
+# signer = "mitos-release"
