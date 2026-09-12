@@ -1,0 +1,49 @@
+name: package-test
+
+# Tests the *tooling* (toolkit/, scripts/) against the fixtures under
+# tests/ — see tests/README.md. This does not build any actual package;
+# that's ci/package-build.yml.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: cargo test
+        run: cargo test --workspace
+
+      - name: cargo fmt --check
+        run: cargo fmt --all -- --check
+
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Validate every recipe.toml is at least well-formed TOML
+        # A cheap syntax-only pre-check (not schema validation — that
+        # needs toolkit::Recipe, exercised for real in
+        # ci/package-build.yml when it actually builds each recipe) so a
+        # trivial typo fails in seconds here instead of after this job's
+        # full cargo build/test/clippy run.
+        run: |
+          set -uo pipefail
+          fail=0
+          for recipe in packages/*/*/recipe.toml; do
+            if ! python3 -c "import tomllib,sys; tomllib.load(open(sys.argv[1],'rb'))" "$recipe"; then
+              echo "::error file=$recipe::not valid TOML"
+              fail=1
+            fi
+          done
+          exit "$fail"

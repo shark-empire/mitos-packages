@@ -1,0 +1,64 @@
+name: package-build
+
+# Builds the tooling, then every package recipe in the repository.
+# Building all of them rather than only changed ones is the simple,
+# obviously-correct starting point — see the note below for the
+# straightforward optimization once the recipe count makes that worth
+# doing.
+on:
+  pull_request:
+    paths:
+      - "packages/**"
+      - "recipes/**"
+      - "toolkit/**"
+      - "scripts/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  push:
+    branches: [main]
+    paths:
+      - "packages/**"
+      - "recipes/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build tooling
+        run: cargo build --release --workspace
+
+      - name: Build every recipe
+        run: |
+          set -uo pipefail
+          fail=0
+          for recipe in packages/*/*/recipe.toml; do
+            echo "::group::$recipe"
+            if ! target/release/mitos-build-package --recipe "$recipe"; then
+              echo "::error file=$recipe::build failed"
+              fail=1
+            fi
+            echo "::endgroup::"
+          done
+          exit "$fail"
+
+      # TODO once this repository has enough recipes for a full rebuild
+      # to be genuinely slow: replace the loop above with only the
+      # recipes affected by this PR's changed files (e.g. via
+      # dorny/paths-filter, mapping changed packages/<cat>/<name>/**
+      # paths to just that recipe, plus every recipe when toolkit/ or
+      # scripts/ itself changes since that can affect all of them).
+
+      - name: Upload built archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitos-packages-built
+          path: repositories/*/packages/*.mpkg
+          if-no-files-found: warn

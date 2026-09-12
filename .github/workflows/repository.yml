@@ -1,0 +1,62 @@
+name: repository
+
+# The publish gate: for each channel, confirm every metadata entry
+# actually matches a real, checksummed archive on disk, regenerate
+# index.json, and sign it if a release seed is configured. Runs on
+# merge to main, not on every PR — a PR's build output
+# (ci/package-build.yml) is validated independently, before anything
+# here touches the channels a real mitos-pkg install would fetch from.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "repositories/**"
+      - "packages/**/recipe.toml"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        channel: [stable, testing, community]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --workspace
+
+      - name: Write signing seed (if configured)
+        env:
+          MITOS_RELEASE_SEED: ${{ secrets.MITOS_RELEASE_SEED }}
+        run: |
+          if [ -z "${MITOS_RELEASE_SEED:-}" ]; then
+            echo "::warning::MITOS_RELEASE_SEED not set — publishing ${{ matrix.channel }} unsigned"
+          else
+            umask 077
+            echo "$MITOS_RELEASE_SEED" > seed.hex
+          fi
+
+      - name: Validate and re-index ${{ matrix.channel }}
+        run: |
+          if [ -f seed.hex ]; then
+            target/release/mitos-publish-repository --channel "${{ matrix.channel }}" --sign-with seed.hex
+          else
+            target/release/mitos-publish-repository --channel "${{ matrix.channel }}"
+          fi
+
+      - name: Remove signing seed
+        if: always()
+        run: rm -f seed.hex
+
+      # Deploying repositories/<channel>/ to wherever it's actually
+      # served from (a CDN, an object store, a static host) isn't wired
+      # up here — this repository doesn't know its own real hosting
+      # target yet. Everything up to this point (validated, signed,
+      # re-indexed) is already exactly what to sync; add that step here
+      # once a hosting target is chosen.
+      - name: Upload channel artifact (placeholder for the real publish step)
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-${{ matrix.channel }}
+          path: repositories/${{ matrix.channel }}
