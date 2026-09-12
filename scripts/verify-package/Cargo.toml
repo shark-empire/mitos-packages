@@ -1,0 +1,12 @@
+[package]
+name = "mitos-verify-package"
+description = "Verifies a built .mpkg against its published metadata and a trusted-keys directory"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+mitos-pkg.workspace = true
+mitos-packages-toolkit.workspace = true
+clap.workspace = true
