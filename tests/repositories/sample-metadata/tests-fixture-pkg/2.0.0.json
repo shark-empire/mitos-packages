@@ -1,0 +1,12 @@
+{
+  "name": "tests-fixture-pkg",
+  "version": "2.0.0",
+  "description": "Fixture package, newer version.",
+  "dependencies": [],
+  "provides": [],
+  "conflicts": [],
+  "url": "https://example.invalid/packages/tests-fixture-pkg-2.0.0.mpkg",
+  "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "signature": null,
+  "size_bytes": 2048
+}
