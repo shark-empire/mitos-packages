@@ -1,0 +1,12 @@
+[package]
+name = "mitos-generate-metadata"
+description = "Turns a built .mpkg archive into its repository metadata JSON entry"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+mitos-pkg.workspace = true
+mitos-packages-toolkit.workspace = true
+clap.workspace = true
