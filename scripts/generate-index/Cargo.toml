@@ -1,0 +1,12 @@
+[package]
+name = "mitos-generate-index"
+description = "Aggregates a channel's per-package metadata into one signed index.json"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+mitos-pkg.workspace = true
+mitos-packages-toolkit.workspace = true
+clap.workspace = true
