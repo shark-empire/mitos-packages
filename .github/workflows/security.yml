@@ -1,0 +1,49 @@
+name: security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC — catches newly
+                          # disclosed advisories against unchanged deps
+
+jobs:
+  cargo-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+      - name: Audit dependencies
+        run: cargo audit
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  keys-directory-hygiene:
+    runs-on: ubuntu-latest
+    # keys/ should only ever contain README.md and *.pub files — see
+    # keys/README.md. This is deliberately not "gitleaks will catch it
+    # anyway": a 32-byte hex seed doesn't match any of gitleaks' generic
+    # secret patterns, so this repo-specific structural check is the
+    # actual backstop for this one, not a duplicate of secret-scan.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm no unexpected files under keys/
+        run: |
+          unexpected="$(find keys -type f ! -name '*.md' ! -name '*.pub')"
+          if [ -n "$unexpected" ]; then
+            echo "::error::unexpected file(s) under keys/ — only README.md and *.pub belong here, see keys/README.md"
+            echo "$unexpected"
+            exit 1
+          fi
