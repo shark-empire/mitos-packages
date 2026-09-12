@@ -1,0 +1,9 @@
+system = "cargo-lib"
+# `cargo install` has nothing to install for a library-only crate (no
+# binaries) — this only builds it, leaving $MITOS_PAYLOAD_DIR empty. A
+# recipe that actually needs something staged (headers, a compiled
+# .rlib, generated docs) should give its own [build] steps in full
+# rather than relying on this template; see recipes/README.md.
+steps = [
+    "cargo build --release --locked",
+]
