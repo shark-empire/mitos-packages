@@ -208,6 +208,9 @@ impl Recipe {
             provides: self.provides.clone(),
             conflicts: self.conflicts.clone(),
             signer: self.signer.clone(),
+            arch: String::from("any"),
+            essential: false,
+            hooks: Vec::new(), 
         }
     }
 
