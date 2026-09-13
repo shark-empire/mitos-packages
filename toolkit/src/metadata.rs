@@ -39,10 +39,10 @@ pub fn build_metadata(
         sha256,
         signature: signature_hex,
         size_bytes,
-        arch: String::from("any"),             // or "x86_64", "aarch64", etc.
+        arch: vec![String::from("any")],              // or "x86_64", "aarch64", etc.
         essential: false,
         installed_size_bytes: 0, 
-        priority: String::from("optional"),
+        priority: String::from("0"),
     })
 }
 
