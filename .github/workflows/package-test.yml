@@ -1,4 +1,4 @@
-name: package-test
+name: package-Test
 
 # Tests the *tooling* (toolkit/, scripts/) against the fixtures under
 # tests/ — see tests/README.md. This does not build any actual package;
