@@ -100,12 +100,16 @@ fn run(args: &Args) -> mitos_packages_toolkit::Result<()> {
     // have to know or care where their output ends up being packaged
     // from, only where $MITOS_PAYLOAD_DIR points.
     let spec = recipe.to_package_spec();
-    std::fs::write(stage_dir.join("pkg.json"), serde_json::to_vec_pretty(&spec)?)?;
+    std::fs::write(
+        stage_dir.join("pkg.json"),
+        serde_json::to_vec_pretty(&spec)?,
+    )?;
 
-    let out_dir = args
-        .out
-        .clone()
-        .unwrap_or_else(|| args.repo_root.join(recipe.channel.as_str()).join("packages"));
+    let out_dir = args.out.clone().unwrap_or_else(|| {
+        args.repo_root
+            .join(recipe.channel.as_str())
+            .join("packages")
+    });
 
     let sign_seed = match &args.sign_with {
         Some(path) => Some(mitos_packages_toolkit::sign::load_seed(path)?),

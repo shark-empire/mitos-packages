@@ -56,7 +56,10 @@ fn run(args: &Args) -> mitos_packages_toolkit::Result<()> {
     let signature_hex = sign::sign_package_payload(&seed, &manifest.payload_sha256);
 
     std::fs::create_dir_all(&args.out)?;
-    let sig_filename = format!("{}.sig", package_filename(&manifest.name, &manifest.version));
+    let sig_filename = format!(
+        "{}.sig",
+        package_filename(&manifest.name, &manifest.version)
+    );
     let sig_path = args.out.join(&sig_filename);
     std::fs::write(&sig_path, signature_hex)?;
 

@@ -210,7 +210,7 @@ impl Recipe {
             signer: self.signer.clone(),
             arch: vec![String::from("any")],
             essential: false,
-            hooks: mitos_pkg::package::hooks::Hooks::default(), 
+            hooks: mitos_pkg::package::hooks::Hooks::default(),
         }
     }
 

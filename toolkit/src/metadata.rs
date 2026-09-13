@@ -39,9 +39,9 @@ pub fn build_metadata(
         sha256,
         signature: signature_hex,
         size_bytes,
-        arch: vec![String::from("any")],              // or "x86_64", "aarch64", etc.
+        arch: vec![String::from("any")], // or "x86_64", "aarch64", etc.
         essential: false,
-        installed_size_bytes: 0, 
+        installed_size_bytes: 0,
         priority: 0,
     })
 }
@@ -66,7 +66,11 @@ pub fn load(path: &Path) -> Result<PackageMetadata> {
 /// relative to a channel's `metadata/` directory — kept in one place so
 /// every tool that writes or reads it (`generate-metadata`,
 /// `generate-index`, `publish-repository`) agrees on the layout.
-pub fn metadata_path(metadata_dir: &Path, name: &str, version: &semver::Version) -> std::path::PathBuf {
+pub fn metadata_path(
+    metadata_dir: &Path,
+    name: &str,
+    version: &semver::Version,
+) -> std::path::PathBuf {
     metadata_dir.join(name).join(format!("{version}.json"))
 }
 
