@@ -208,7 +208,7 @@ impl Recipe {
             provides: self.provides.clone(),
             conflicts: self.conflicts.clone(),
             signer: self.signer.clone(),
-            arch: vec![String::from("any")],
+            arch: Vec (default_arch()),
             essential: false,
             hooks: mitos_pkg::package::hooks::Hooks::default(), 
         }
