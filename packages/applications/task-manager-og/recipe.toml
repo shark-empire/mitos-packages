@@ -1,0 +1,23 @@
+name = "task-manager-og"
+version = "0.1.0"
+description = "A Linux-native rebuild of Dave Plummer's Task Manager OG."
+category = "system"
+channel = "testing"
+
+[source]
+git = "https://github.com/mikedesu/evildojo-tmog"
+rev = "master" # Note: Check the default branch of the repo if 'master' fails
+
+[build]
+steps = [
+    # 1. Compile the C++/Qt5 source code
+    "make",
+    
+    # 2. Install the binary into the package staging area
+    "mkdir -p $MITOS_PAYLOAD_DIR/usr/bin",
+    "install -m 755 evildojo-tmog $MITOS_PAYLOAD_DIR/usr/bin/",
+    
+    # 3. Install the .desktop file so it appears in your menus/GUI
+    "mkdir -p $MITOS_PAYLOAD_DIR/usr/share/applications",
+    "sed 's|@BINDIR@|/usr/bin|g' packaging/evildojo-tmog.desktop > $MITOS_PAYLOAD_DIR/usr/share/applications/evildojo-tmog.desktop"
+]
