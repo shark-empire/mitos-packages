@@ -1,0 +1,38 @@
+name = "firefox"
+version = "124.0" # Update this as new versions release
+description = "Mozilla Firefox web browser."
+category = "applications"
+channel = "testing"
+
+# We don't use inherits = "cargo" because we aren't compiling Rust code.
+# We also might not use a [source] git block if your package manager 
+# requires a git repo. If it requires a git repo, you can point it to 
+# an empty placeholder repo and do the real work in the [build] steps.
+
+[build]
+steps = [
+    # 1. Create a temporary directory to download the heavy binary
+    "mkdir -p /tmp/firefox-build",
+    "cd /tmp/firefox-build",
+    
+    # 2. Download the official Linux binary directly from Mozilla
+    "wget -O firefox.tar.bz2 'https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US'",
+    
+    # 3. Extract it
+    "tar -xjf firefox.tar.bz2",
+    
+    # 4. Move the extracted folder to the MITOS package staging area
+    "mkdir -p $MITOS_PAYLOAD_DIR/usr/lib",
+    "mv firefox $MITOS_PAYLOAD_DIR/usr/lib/firefox",
+    
+    # 5. Create a symlink so users can just type 'firefox' in the terminal
+    "mkdir -p $MITOS_PAYLOAD_DIR/usr/bin",
+    "ln -s /usr/lib/firefox/firefox $MITOS_PAYLOAD_DIR/usr/bin/firefox",
+    
+    # 6. Create a basic .desktop file so it shows up in your mitos-gui menus
+    "mkdir -p $MITOS_PAYLOAD_DIR/usr/share/applications",
+    "cat <<EOF > $MITOS_PAYLOAD_DIR/usr/share/applications/firefox.desktop\n[Desktop Entry]\nName=Firefox Web Browser\nExec=/usr/bin/firefox %u\nIcon=/usr/lib/firefox/browser/chrome/icons/default/default128.png\nType=Application\nCategories=Network;WebBrowser;\nEOF",
+    
+    # 7. Clean up the temp directory to keep the package build clean
+    "rm -rf /tmp/firefox-build"
+]
