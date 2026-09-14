@@ -1,0 +1,34 @@
+# A general system need with no custom MITOS implementation yet — see
+# CONTRIBUTING.md/docs/maintainer-guide.md for the "package an existing
+# project" path this recipe follows (as opposed to a MITOS-native
+# component, which every recipe under packages/core|system|desktop|development
+# is instead).
+#
+# NOTE: this covers the same ground as mitos-system-monitor
+# (packages/system/mitos-system-monitor) to some degree — that one is
+# the custom MITOS component and presumably the long-term intended
+# system monitor; `bottom` is here specifically as the task-manager-style
+# "see and kill processes" tool the user asked for, usable today while
+# mitos-system-monitor matures. Worth a maintainer decision later on
+# whether both stay, or mitos-system-monitor absorbs this role and this
+# recipe gets removed (see POLICY.md's removal criteria).
+name = "bottom"
+version = "0.14.7"
+description = "Cross-platform terminal task manager / process & system monitor (upstream: ClementTsang/bottom, MIT licensed). Provides the `btm` binary. Packaged here because MITOS has no custom task manager yet."
+category = "applications"
+channel = "community"
+inherits = "cargo"
+
+[source]
+git = "https://github.com/ClementTsang/bottom"
+rev = "0.14.7"
+
+# build.steps left empty — inherits recipes/applications/cargo.toml,
+# which is sufficient: bottom is a plain single-binary crate.
+
+provides = ["mitos-task-manager"]
+
+# Uncomment once a community signer is registered for whoever maintains
+# this package here — see keys/README.md and docs/maintainer-guide.md
+# "Requesting a community signer":
+# signer = "community-<handle>"
