@@ -1,0 +1,17 @@
+# Essential utility with no custom MITOS disk-usage tool yet.
+name = "dust"
+version = "1.2.4"
+description = "A more intuitive version of `du` — an instant, colored overview of what's actually using your disk space (upstream: bootandy/dust, Apache-2.0/MIT dual-licensed). Provides the `dust` binary (crate name is `du-dust`; cargo install --path . resolves this automatically). Packaged here because MITOS has no custom disk-usage tool yet."
+category = "applications"
+channel = "community"
+inherits = "cargo"
+
+[source]
+git = "https://github.com/bootandy/dust"
+rev = "v1.2.4"
+
+# build.steps left empty — inherits recipes/applications/cargo.toml,
+# which is sufficient: dust is a plain single-binary crate.
+
+# Uncomment once a community signer is registered — see keys/README.md:
+# signer = "community-<handle>"
