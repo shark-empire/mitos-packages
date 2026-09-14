@@ -66,7 +66,7 @@ would actively break the system rather than merely being redundant.
 
 ## Deprecation, in practice
 
-"Failed CI for 30 consecutive days" means 30 days of `ci/package-build.yml`
+"Failed CI for 30 consecutive days" means 30 days of `.github/workflows/package-build.yml`
 actually running against that package and failing — not 30 days since
 anyone looked at it. A package nobody has touched but that keeps
 building fine isn't deprecated by neglect; a package that's actively

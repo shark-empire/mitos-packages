@@ -46,7 +46,7 @@ cargo test --workspace
 (`recipe::Recipe::resolve`, `index::build_index`, the `sign` module)
 against fixtures under `tests/` (see `tests/README.md`) rather than
 running the CLI binaries end to end — an end-to-end test needs a real
-git clone and a real build, which is what `ci/package-build.yml`
+git clone and a real build, which is what `.github/workflows/package-build.yml`
 actually does against real recipes, not something worth mocking out
 in-repo.
 
