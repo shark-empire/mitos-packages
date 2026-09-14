@@ -1,7 +1,7 @@
 # tests/
 
 Fixtures for `toolkit`'s unit tests (`cargo test --workspace`, run by
-`ci/package-test.yml`) — not a test runner of its own, and not a place
+`.github/workflows/package-test.yml`) — not a test runner of its own, and not a place
 generated output ever gets written to. Everything under here is
 committed, hand-written, and small on purpose.
 
