@@ -18,7 +18,7 @@ compromise — just a short, auditable list of `<signer>.pub` files.
 - **Seeds** (the private half — 32 random bytes, hex-encoded, e.g. via
 `openssl rand -hex 32 > seed.hex`) live only in whoever's signing
 things' local environment or CI secrets store (see
-`ci/security.yml`) — generated once per signer, never committed, never
+`.github/workflows/security.yml`) — generated once per signer, never committed, never
 logged, never pasted into a PR.
 - **Public keys** (`<signer>.pub`, the hex-encoded 32-byte Ed25519 public
 key derived from a seed) are what actually ship — both in this
