@@ -1,0 +1,29 @@
+# Essential development need with no custom MITOS git client yet. Fits
+# "applications" (third-party) rather than "development" (MITOS-native)
+# per the same rule every other third-party package here follows — see
+# packages/applications/README.md.
+name = "gitui"
+version = "0.28.0"
+description = "Blazing fast terminal UI for git — staging hunks, stashing, browsing log/diff, all without leaving the terminal (upstream: gitui-org/gitui, MIT licensed; the project moved from extrawurst/gitui to this org — use the new URL). Provides the `gitui` binary. Packaged here because MITOS has no custom git client yet."
+category = "applications"
+channel = "community"
+inherits = "cargo"
+
+[source]
+git = "https://github.com/gitui-org/gitui"
+rev = "v0.28.0"
+
+# build.steps left empty — inherits recipes/applications/cargo.toml.
+#
+# NOTE: unlike bottom/dust/ouch, gitui is not a fully self-contained
+# pure-Rust build — it depends on `git2` (libgit2 bindings), which
+# compiles a vendored copy of libgit2 from C source at build time via
+# the `cc` crate. This needs a C compiler and standard build tools
+# (`cc`/`make`) present in the build environment; it does not need
+# system libgit2 or system OpenSSL installed (both are vendored by
+# gitui's default Cargo features), but it is a heavier build than the
+# other terminal tools in this directory and worth knowing about before
+# assuming every recipe here builds with "just cargo and nothing else."
+
+# Uncomment once a community signer is registered — see keys/README.md:
+# signer = "community-<handle>"
