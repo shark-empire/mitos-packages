@@ -9,14 +9,14 @@ PR, that one is what to read before disputing a rejected one.
 | Channel | What it means | Who can publish to it |
 |---|---|---|
 | `stable` | Built, signed, soaked in `testing`, no known regressions. What `mitos-pkg`'s default repository config points at. | Maintainers, after promotion (below). |
-| `testing` | Builds and passes `ci/package-test.yml`. Where every new package and version bump starts. | Any accepted PR. |
+| `testing` | Builds and passes `.github/workflows/package-test.yml`. Where every new package and version bump starts. | Any accepted PR. |
 | `community` | Same build/verification pipeline, separate trust root (see `keys/README.md`) — not held to the same review bar as `core`/`system`/`desktop`/`development`, and never auto-promoted to `stable`. | Package maintainers registered for a community signer name. |
 
 ## Promotion: `testing` → `stable`
 
 A package promotes when, since it last changed:
 
-1. It's built successfully in `ci/package-build.yml` on every architecture
+1. It's built successfully in `.github/workflows/package-build.yml` on every architecture
    `toolchains/` currently lists as in-CI (`x86_64` only as of this
    writing — see `toolchains/README.md`).
 2. It's sat in `testing` for at least 7 days with no regression reports

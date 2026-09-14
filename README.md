@@ -27,7 +27,7 @@ scripts/<tool>/                          the Rust CLI tools that turn one into t
 toolkit/                                 the shared Rust library scripts/ is built on
 toolchains/<arch>/                       cross-compilation settings, one day
 keys/                                    signing-key *documentation* — never actual keys
-ci/                                      the pipeline that runs all of this on every push
+.github/workflows/                       the pipeline that runs all of this on every push
 docs/                                    the long-form version of everything below
 tests/                                   fixtures for toolkit's + scripts'/ integration tests
 ```
@@ -73,7 +73,7 @@ $BIN/mitos-generate-index --channel stable
 
 # Or, instead of the last step: validate every metadata entry actually
 # matches a real archive on disk *and* regenerate the index in one go —
-# what ci/repository.yml actually runs before anything gets published.
+# what .github/workflows/repository.yml actually runs before anything gets published.
 $BIN/mitos-publish-repository --channel stable
 ```
 

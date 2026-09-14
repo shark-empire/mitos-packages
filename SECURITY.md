@@ -24,7 +24,7 @@ what's on offer, and we're glad to give it.
 
 ## Scope
 
-In scope: `toolkit/`, `scripts/*`, `ci/*`, and any `recipe.toml`'s
+In scope: `toolkit/`, `scripts/*`, `.github/workflows/*`, and any `recipe.toml`'s
 `build.steps` being a vector for something worse than "this specific
 package builds wrong" (e.g. a step that could affect *other* packages'
 builds, or CI's own environment).

@@ -20,7 +20,7 @@
 5. New packages start on the `testing` channel (`recipe.toml`'s
    `channel` field) — see `POLICY.md` for what promotes a package to
    `stable`.
-6. Open a PR. `ci/package-build.yml` builds it and `ci/package-test.yml`
+6. Open a PR. `.github/workflows/package-build.yml` builds it and `.github/workflows/package-test.yml`
    runs the dependency-resolution and format checks under `tests/`
    against it automatically.
 
@@ -52,7 +52,7 @@ currently happens to do.
 
 ## Commit / PR conventions
 
-- One package addition or version bump per PR — keeps `ci/package-build.yml`'s
+- One package addition or version bump per PR — keeps `.github/workflows/package-build.yml`'s
   failure attributable to one thing.
 - Reference the upstream commit/tag a version bump tracks in the PR
   description, not just in `recipe.toml`'s `source.rev`.
