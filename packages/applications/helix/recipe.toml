@@ -1,0 +1,40 @@
+# Essential desktop/terminal need with no custom MITOS text editor yet.
+# This one needs its own [build] steps rather than plain `inherits =
+# "cargo"` — see docs/maintainer-guide.md's "When the template isn't
+# enough" section, which uses this exact package as its worked example.
+name = "helix"
+# NOTE on version vs. source.rev: upstream's actual git tag is
+# "25.07.1" (their calendar-versioning scheme zero-pads the month,
+# which isn't valid semver — leading zeros aren't allowed in a semver
+# numeric identifier). `version` here is the semver-valid equivalent;
+# `source.rev` below is the literal tag as it actually exists in their
+# repository. Don't "fix" one to match the other — they're deliberately
+# representing the same release two different, both-correct ways.
+version = "25.7.1"
+description = "A post-modern modal (Kakoune/Neovim-inspired) terminal text editor written in Rust (upstream: helix-editor/helix, MPL-2.0). Provides the `hx` binary. Packaged here because MITOS has no custom text editor yet."
+category = "applications"
+channel = "community"
+
+[source]
+git = "https://github.com/helix-editor/helix"
+rev = "25.07.1"
+
+[build]
+steps = [
+    # Helix is a workspace, not a single-crate repo — the installable
+    # binary crate is helix-term specifically, not the workspace root.
+    "cargo install --path helix-term --root \"$MITOS_PAYLOAD_DIR/usr\" --locked",
+    # Helix also needs its runtime/ directory (tree-sitter grammars,
+    # themes, language queries) available at runtime, found via the
+    # HELIX_RUNTIME environment variable — upstream's own packaging
+    # docs note that distro packages are expected to wrap the `hx`
+    # binary to set this, since it isn't baked into the binary itself.
+    "mkdir -p \"$MITOS_PAYLOAD_DIR/usr/share/helix\"",
+    "cp -r runtime \"$MITOS_PAYLOAD_DIR/usr/share/helix/runtime\"",
+    "mv \"$MITOS_PAYLOAD_DIR/usr/bin/hx\" \"$MITOS_PAYLOAD_DIR/usr/bin/hx.real\"",
+    "printf '#!/bin/sh\\nexport HELIX_RUNTIME=/usr/share/helix/runtime\\nexec /usr/bin/hx.real \"$@\"\\n' > \"$MITOS_PAYLOAD_DIR/usr/bin/hx\"",
+    "chmod +x \"$MITOS_PAYLOAD_DIR/usr/bin/hx\"",
+]
+
+# Uncomment once a community signer is registered — see keys/README.md:
+# signer = "community-<handle>"
