@@ -1,0 +1,72 @@
+name = "mpv"
+version = "0.41.0" # mpv's own latest stable tag as of writing -- update
+# alongside mpv-build's tracked ref below when bumping.
+description = "mpv media player -- plays local video and audio files. No GUI toolkit dependency (own native window/OSD, not GTK), so unlike Celluloid/GNOME Text Editor this doesn't need the GTK4/libadwaita/meson foundation mitos-packages doesn't have yet -- see packages/applications/README.md."
+category = "applications"
+channel = "testing"
+
+# We don't use `inherits = "cargo"` -- mpv is C, not Rust, and this repo
+# has no meson/C-build template yet either (see the README's "Still
+# missing" section). This writes its own [build] steps instead.
+
+# [source] here is `mpv-build` (github.com/mpv-player/mpv-build), the
+# *official* mpv-player-org helper toolset -- not mpv's own repo -- since
+# that's the thing actually checked out and built below (see
+# docs/package-format.md: build.steps run with cwd set to whatever
+# [source] resolves to). mpv-build compiles ffmpeg + libass + mpv from
+# source together and statically links them, so the resulting binary
+# needs none of the three installed on the system afterward -- avoids
+# this recipe needing to separately package ffmpeg/libass as their own
+# MITOS runtime dependencies, which don't exist yet either.
+#
+# Tradeoff worth knowing: `version` above reflects mpv's own release the
+# recipe was written against, but `./update` below tracks mpv-build's own
+# ref (its default branch, effectively upstream mpv's latest) somewhat
+# independently -- the two aren't mechanically locked together. Pin a
+# specific mpv commit inside mpv-build's own config if exact
+# reproducibility matters more than tracking latest; left at mpv-build's
+# default for now.
+[source]
+git = "https://github.com/mpv-player/mpv-build"
+rev = "master"
+
+[build]
+steps = [
+    # NOTE: assumes the CI/build environment (not the MITOS target
+    # system -- this only needs to be true where `mitos-build-package`
+    # itself runs) already has: a C compiler, yasm, meson, ninja,
+    # autoconf/automake/libtool, python3, and the X11/ALSA/pulseaudio/
+    # fontconfig/freetype/fribidi dev headers mpv-build's own README
+    # lists. None of that ships to the built .mpkg -- see mpv-build's
+    # "Dependencies" section for the exact list per distro.
+    #
+    # This compiles ffmpeg from source, so it's a genuinely slow build
+    # compared to every other recipe in this directory -- minutes, not
+    # seconds. Trimming ffmpeg's configure flags (disable encoders/
+    # muxers/network protocols mpv doesn't need for local playback) would
+    # shrink both build time and the final binary, worth doing once this
+    # baseline build is confirmed working end to end -- left at
+    # mpv-build's own defaults for now rather than guessing at flags with
+    # no compiler here to check them against.
+
+    # 1. Fetch the ffmpeg/libass/mpv source trees mpv-build manages.
+    "./update",
+
+    # 2. Build all three, statically linked together.
+    "./rebuild -j$(nproc)",
+
+    # 3. Stage the resulting binary.
+    "mkdir -p \"$MITOS_PAYLOAD_DIR/usr/bin\" && cp mpv/build/mpv \"$MITOS_PAYLOAD_DIR/usr/bin/mpv\"",
+
+    # 4. Desktop file with MimeType= so standard MIME-database discovery
+    #    (not just mitos-file-manager's "Set Recommended Defaults", which
+    #    looks this file up by id: mpv.desktop) recognizes mpv as a
+    #    video/audio handler. `Icon=mpv` is a theme-name lookup, not a
+    #    bundled file -- falls back to a generic icon if the active icon
+    #    theme doesn't happen to ship one, rather than failing.
+    "mkdir -p \"$MITOS_PAYLOAD_DIR/usr/share/applications\" && cat <<EOF > \"$MITOS_PAYLOAD_DIR/usr/share/applications/mpv.desktop\"\n[Desktop Entry]\nName=mpv\nComment=Play movies and songs\nExec=/usr/bin/mpv %U\nIcon=mpv\nTerminal=false\nType=Application\nCategories=AudioVideo;Player;\nMimeType=video/mp4;video/x-matroska;video/webm;video/quicktime;video/x-msvideo;video/mpeg;video/x-flv;video/3gpp;video/3gpp2;video/ogg;video/x-ms-wmv;video/mp2t;audio/mpeg;audio/flac;audio/x-flac;audio/ogg;audio/wav;audio/x-wav;audio/mp4;audio/aac;audio/x-ms-wma;audio/opus;audio/webm;\nEOF",
+]
+
+# Uncomment once this package has a maintainer signing key on file (see
+# keys/README.md) and CI is set up to sign it during publish:
+# signer = "mitos-release"
