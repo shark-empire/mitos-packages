@@ -18,6 +18,7 @@ own signing key.
 | `dust` | Disk usage analyzer | [bootandy/dust](https://github.com/bootandy/dust) | community |
 | `gitui` | Terminal git client | [gitui-org/gitui](https://github.com/gitui-org/gitui) | community |
 | `firefox` | Web browser | Mozilla's official binary — see its `recipe.toml` for a trademark/redistribution note | testing |
+| `mpv` | Media player (video/audio) | [mpv-player/mpv](https://github.com/mpv-player/mpv), built via the official [mpv-build](https://github.com/mpv-player/mpv-build) helper — see its `recipe.toml` for why `[source]` points at the helper rather than mpv itself | testing |
 
 Two of these are `testing` rather than `community` on purpose, not by
 oversight — read the note at the top of each one's `recipe.toml` before
@@ -37,12 +38,18 @@ degree — see `bottom`'s own `recipe.toml`.
 
 ## Still missing, on purpose rather than by oversight
 
-An image viewer and a PDF viewer aren't stubbed in yet — most
-reasonable options need a GUI toolkit (GTK, Qt) whose support under
-`mitos-gui`'s Smithay-based compositor isn't confirmed. `firefox` and
-`task-manager-og` (Qt5) above are already testing that water to some
-degree; once one of them is confirmed working end to end on real
-`mitos-gui`, the same toolkit question is answered for the rest of this
-category too.
+An image viewer, a PDF viewer, a GUI text editor, and a GUI media-player
+front-end (Celluloid, as opposed to `mpv` above, which has no GUI
+dependency) aren't stubbed in yet — most reasonable options need a GUI
+toolkit (GTK, Qt) whose support under `mitos-gui`'s Smithay-based
+compositor isn't confirmed, *and*, specifically for GTK4 ones
+(Celluloid, GNOME Text Editor): this repo has no GTK4, libadwaita,
+gtksourceview, or meson package/template yet at all — not even as a
+declared `[[dependencies]]` entry on `packages/desktop/mitos-file-manager`,
+which needs GTK4 too. That foundation needs solving once, not per-app.
+`firefox` and `task-manager-og` (Qt5) above are already testing the
+toolkit-support water to some degree; once one of them is confirmed
+working end to end on real `mitos-gui`, the GTK/Qt question is answered
+for the rest of this category too.
 
 See `docs/maintainer-guide.md` for how to add the next one.
